@@ -11,6 +11,7 @@ import com.google.maps.model.DirectionsRoute;
 import com.google.maps.model.DirectionsLeg;
 import com.google.maps.model.EncodedPolyline;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -21,12 +22,15 @@ import java.util.List;
 @Slf4j
 public class PolylineService {
 
+    @Value("${X_API_KEY}")
+    private String xApiKey;
+
     public ArrayList<LatLng> getList(Double originLat, Double originLng, Double destLat, Double destLng, Integer distance) throws ApiException, IOException {
     String origin = originLat.toString()+","+originLng.toString();
     String dest = destLat.toString() + "," + destLng.toString();
     List<LatLng> path = new ArrayList();
     GeoApiContext context = new GeoApiContext.Builder()
-            .apiKey("AIzaSyAEQvKUVouPDENLkQlCF6AAap1Ze-6zMos")
+            .apiKey(xApiKey)
             .build();
     DirectionsApiRequest req = DirectionsApi.getDirections(context, origin, dest);
         DirectionsResult res = null;
@@ -75,7 +79,7 @@ public class PolylineService {
             }
         }
     } catch (Exception E){
-            log.info("error");
+            log.info("error in fetching directions from google api");
         }
         path.add(new LatLng(destLat,destLng));
         return getDesiredPoints((ArrayList<LatLng>) path,distance);

@@ -17,7 +17,11 @@ import org.springframework.web.client.RestTemplate;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Objects;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.LinkedHashMap;
 
 @Service
 @Slf4j
@@ -25,6 +29,9 @@ public class GoogleDirectionService {
 
     @Value("${GOOGLE_MAPS_BASE_URL}")
     private String baseUrl;
+
+    @Value("${X_API_KEY}")
+    private String xApiKey;
 
     @Autowired
     private RestTemplate restTemplate;
@@ -38,7 +45,7 @@ public class GoogleDirectionService {
         Map<String, String> params = new HashMap<String, String>();
         params.put("origin", latLngRequest.getOriginLatLng().toString());
         params.put("destination", latLngRequest.getDestinationLatLng().toString());
-        params.put("key","AIzaSyAEQvKUVouPDENLkQlCF6AAap1Ze-6zMos");
+        params.put("key",xApiKey);
         try{
             response = restTemplate.exchange(baseUrl + "/api/directions/json?origin={origin}&destination={destination}&key={key}",
                 HttpMethod.GET, null, JSONObject.class, params);
